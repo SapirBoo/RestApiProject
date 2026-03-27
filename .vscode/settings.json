@@ -1,0 +1,12 @@
+{
+    "cSpell.words": [
+        "autoflush",
+        "debugpy",
+        "dotenv",
+        "fastapi",
+        "ondelete",
+        "redoc",
+        "sessionmaker",
+        "uvicorn"
+    ]
+}
