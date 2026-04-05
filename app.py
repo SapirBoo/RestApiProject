@@ -13,7 +13,7 @@ from resources.tag import rt as tag_router
 from routers.auth import rt as auth_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 🔥 startup logic
+    # startup logic
     print("CREATING TABLES...")
     print("---------------Test Sapir ------------")
 
@@ -21,7 +21,7 @@ async def lifespan(app: FastAPI):
     
     yield
         
-
+#----Create APP ----
 def create_app():
     app = FastAPI(
         title="My API",
