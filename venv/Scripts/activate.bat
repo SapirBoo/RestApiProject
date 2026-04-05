@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Administrator.DESKTOP-QK5R1H1\Documents\Projects\RestApiProject\venv
+set VIRTUAL_ENV=C:\Users\sapir\Documents\RestApiProject\venv
 
 if not defined PROMPT set PROMPT=$P$G
 
