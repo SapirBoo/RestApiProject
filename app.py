@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import sqlalchemy 
 from db import Base,engine
-
+import os
 
 from models import item, tag, itams_tags
 from resources.store import rt as store_router
@@ -15,7 +15,8 @@ from routers.auth import rt as auth_router
 async def lifespan(app: FastAPI):
     # startup logic
     print("--------------- Sapir App ------------")
-
+   
+    print("DATABASE_URL =", os.getenv("DATABASE_URL"))
     #Base.metadata.create_all(bind=engine)
     
     yield
