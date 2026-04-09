@@ -14,9 +14,6 @@ from routers.auth import rt as auth_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup logic
-    print("--------------- Sapir App ------------")
-   
-    print("DATABASE_URL =", os.getenv("DATABASE_URL"))
     #Base.metadata.create_all(bind=engine)
     
     yield
