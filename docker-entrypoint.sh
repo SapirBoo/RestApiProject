@@ -1,11 +1,12 @@
 #!/bin/sh
 echo "Waiting for DB..."
 
-until pg_isready -h db -p 5432 -U postgres
-do
-  echo "Postgres is unavailable - sleeping"
-  sleep 2
-done
+#until pg_isready -h db -p 5432 -U postgres
+#do
+#  echo "Postgres is unavailable - sleeping"
+#  sleep 2
+#done
+sleep 5
 
 echo "Postgres is up!"
 

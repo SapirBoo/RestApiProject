@@ -5,7 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL","postgresql://postgres:password@db:5432/mydb" ) 
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL") 
+#SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL","postgresql://postgres:password@db:5432/mydb" ) //FB  
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
