@@ -5,11 +5,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL","sqlite:////app/test.db" ) 
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL","postgresql://postgres:password@db:5432/mydb" ) 
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}  # רק ל-SQLite
-)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) # type: ignore
 Base = declarative_base() # type: ignore
 @event.listens_for(Engine, "connect")

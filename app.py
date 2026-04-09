@@ -14,10 +14,9 @@ from routers.auth import rt as auth_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup logic
-    print("CREATING TABLES...")
-    print("---------------Test Sapir ------------")
+    print("--------------- Sapir App ------------")
 
-    Base.metadata.create_all(bind=engine)
+    #Base.metadata.create_all(bind=engine)
     
     yield
         
