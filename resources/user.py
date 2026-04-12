@@ -49,4 +49,6 @@ def send_email(to_email: str, subject:str, content: str) :
         }
     except Exception as e:
         return {"error": str(e)}
+    
+    
         
