@@ -34,7 +34,7 @@ def delete_user(user_id: int, db: Session = Depends(db.get_db)):
     db.delete(user)
     db.commit()
 
-def send_email(to_email: str, subject:str, content: str) :
+def send_email(to_email: str, subject:str) :
     message= Mail(from_email=FROM_EMAIL,
                   to_emails=to_email,
                   subject=subject,

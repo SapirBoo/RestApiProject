@@ -57,7 +57,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
     db.add(new_user)
     db.commit()
-    send_email(to_email=user.email,subject="You register successfully! ")
+    send_email(to_email=user.email,subject="You register successfully!")
     
     return {"msg": "User created successfully"}
 
