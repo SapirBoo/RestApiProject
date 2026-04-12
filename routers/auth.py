@@ -52,7 +52,6 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     new_user = User(
         username=user.username,
         email=user.email,
-        content="This is a test email",
         password=hash_password(user.password)
     )
 
