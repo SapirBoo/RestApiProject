@@ -5,6 +5,7 @@ import db
 from fastapi import FastAPI, HTTPException ,APIRouter,status,Depends
 from sqlalchemy.orm import Session
 from models.user import User
+from resources.user import send_email
 from schemas.user import UserResponse,UserCreate,UserLogin
 from utils.security import hash_password, verify_password
 from db import get_db
@@ -43,14 +44,22 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
 
+    existing = db.query(User).filter(User.email == user.email).first()
+    
+    if existing:
+        raise HTTPException(status_code=400, detail="User with this email is allredy exists")
+    
     new_user = User(
         username=user.username,
+        email=user.email,
+        content="This is a test email",
         password=hash_password(user.password)
     )
 
     db.add(new_user)
     db.commit()
-
+    send_email(to_email=user.email,subject="You register successfully! ")
+    
     return {"msg": "User created successfully"}
 
 # ---- Login ----

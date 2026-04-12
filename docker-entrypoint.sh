@@ -15,7 +15,7 @@ alembic upgrade head || exit 1
 
 echo "Starting app..."
 exec gunicorn -k uvicorn.workers.UvicornWorker app:app \
-  --bind 0.0.0.0:$PORT \
+  --bind 0.0.0.0:${PORT:-8000} \
   --workers 2 \
   --timeout 60 \
   --access-logfile - \
