@@ -38,6 +38,7 @@ def send_email(to_email: str, subject:str, content: str) :
     message= Mail(from_email=FROM_EMAIL,
                   to_emails=to_email,
                   subject=subject,
+                  content="h1>Welcome!</h1><p>Your account was created </p>"
                   html_content=content)
     try:
         sg=SendGridAPIClient(SENDGRID_API_KEY)
