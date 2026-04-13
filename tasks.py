@@ -3,6 +3,10 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import os
 
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+TEMPLATE_ID = os.getenv("SENDGRID_TEMPLATE_ID")
+
+
 @celery.task
 def send_email_task(to_email, subject):
     print("Send email..")
@@ -13,6 +17,18 @@ def send_email_task(to_email, subject):
         plain_text_content="Welcome! You registered successfully."
     )
 
+    def send_welcome_email(email: str, name: str):
+        message = Mail(
+        from_email=os.getenv("FROM_EMAIL"),
+        to_emails=to_email
+        )
+
+        message.dynamic_template_data = {
+        "name": name,
+        "email": to_email
+        }
+
+    message.template_id = TEMPLATE_ID
     try:
         sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
         response = sg.send(message)

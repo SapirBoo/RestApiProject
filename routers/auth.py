@@ -14,7 +14,7 @@ from dependencies.auth import security,decode_and_validate_token
 import jwt
 
 from dependencies.auth import blacklist, get_current_user
-from tasks import send_email_task
+from tasks import send_welcome_email
 
 rt=APIRouter(tags=["auth"])
 
@@ -57,10 +57,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
     db.add(new_user)
     db.commit()
-    send_email_task.delay(
-    user.email,
-    "Welcome! You registered successfully!"
-    )
+    send_welcome_email.delay(
+    user.email,user.username)
     return {"msg": "User created successfully"}
 
 # ---- Login ----
