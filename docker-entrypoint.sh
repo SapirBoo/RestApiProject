@@ -13,7 +13,11 @@ echo "Postgres is up!"
 echo "Running migrations..."
 alembic upgrade head || exit 1
 
-echo "Starting app..."
+
+echo "Starting Celery worker..."
+celery -A celery_app worker --loglevel=info --pool=solo &
+
+echo "Starting API..."
 exec gunicorn -k uvicorn.workers.UvicornWorker app:app \
   --bind 0.0.0.0:${PORT:-8000} \
   --workers 2 \
