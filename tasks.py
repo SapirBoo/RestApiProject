@@ -17,16 +17,16 @@ def send_email_task(to_email, subject):
         plain_text_content="Welcome! You registered successfully."
     )
 
-    def send_welcome_email(email: str, name: str):
-        message = Mail(
-        from_email=os.getenv("FROM_EMAIL"),
-        to_emails=to_email
-        )
+def send_welcome_email(to_email: str, name: str):
+    message = Mail(
+    from_email=os.getenv("FROM_EMAIL"),
+    to_emails=to_email
+    )
 
-        message.dynamic_template_data = {
-        "name": name,
-        "email": to_email
-        }
+    message.dynamic_template_data = {
+    "name": name,
+    "email": to_email
+    }
 
     message.template_id = TEMPLATE_ID
     try:
