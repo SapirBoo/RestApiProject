@@ -14,14 +14,15 @@ celery = Celery(
     backend=REDIS_URL
 )
 
-if REDIS_URL.startswith("rediss://"):
-    celery.conf.broker_use_ssl = {
+celery.conf.update(
+    broker_use_ssl = {
     "ssl_cert_reqs": ssl.CERT_NONE
-    }
+    },
 
-    celery.conf.result_backend_use_ssl = {
+    result_backend_use_ssl = {
     "ssl_cert_reqs": ssl.CERT_NONE
     }
+)
 
 celery.conf.imports = ("tasks",)
 

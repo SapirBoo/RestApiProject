@@ -31,8 +31,6 @@ def create_app():
     )
     
     
-    print("REDIS_URL =", os.getenv("REDIS_URL"))
-
     app.include_router(store_router)
     app.include_router(item_router)
     app.include_router(tag_router)
