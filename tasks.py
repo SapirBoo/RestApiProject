@@ -6,6 +6,8 @@ import os
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 TEMPLATE_ID = os.getenv("TEMPLATE_ID")
 
+print("TEMPLATE_ID ENV:", os.getenv("TEMPLATE_ID"))
+print("SENDGRID_TEMPLATE_ID ENV:", os.getenv("SENDGRID_TEMPLATE_ID"))
 
 @celery.task
 def send_email_task(to_email, subject):
