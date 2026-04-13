@@ -11,6 +11,7 @@ from resources.store import rt as store_router
 from resources.item import rt as item_router
 from resources.tag import rt as tag_router
 from routers.auth import rt as auth_router
+from resources.user import rt as user_router 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup logic
@@ -35,7 +36,7 @@ def create_app():
     app.include_router(item_router)
     app.include_router(tag_router)
     app.include_router(auth_router)
-    
+    app.include_router(user_router)
     return app
 
 

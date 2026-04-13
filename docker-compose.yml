@@ -36,5 +36,12 @@ services:
   #      condition: service_healthy
   #  env_file:
   #    - ./.env
+  worker:
+    build: .
+    command: rq worker emails
+    env_file:
+      - .env
+    depends_on:
+      - api
 volumes:
   postgres_data:

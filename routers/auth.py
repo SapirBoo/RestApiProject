@@ -15,6 +15,8 @@ from dependencies.auth import security,decode_and_validate_token
 import jwt
 
 from dependencies.auth import blacklist, get_current_user
+from task_queue import email_queue
+from tasks import send_email_task
 
 rt=APIRouter(tags=["auth"])
 
@@ -57,8 +59,12 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
     db.add(new_user)
     db.commit()
-    send_email(to_email=user.email,subject="You register successfully!")
-    
+    #response=send_email(to_email=user.email,subject="You register successfully!")
+    email_queue.enqueue(
+    send_email_task,
+    user.email,
+    "Welcome!You register successfully!"
+    )    
     return {"msg": "User created successfully"}
 
 # ---- Login ----

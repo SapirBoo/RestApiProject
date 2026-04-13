@@ -12,3 +12,5 @@ PyJWT
 alembic
 gunicorn
 sendgrid
+rq
+redis

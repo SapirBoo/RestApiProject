@@ -49,6 +49,20 @@ def send_email(to_email: str, subject:str) :
         }
     except Exception as e:
         return {"error": str(e)}
-    
-    
-        
+
+@rt.get('/users', status_code=status.HTTP_200_OK)   
+def get_all_users(db: Session = Depends(db.get_db)):  
+    data=db.query(User).all()
+    result = []
+    for user in data:
+        result.append({
+            "id": user.id,
+            "name": user.username,
+            "email":user.email
+        })
+
+    return {
+        "users": result,
+        "total": len(result)
+    }
+   
