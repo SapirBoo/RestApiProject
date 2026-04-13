@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 print("REDIS_URL =", os.getenv("REDIS_URL"))
-REDIS_URL = os.getenv("REDIS_URL")
+REDIS_URL = os.environ["REDIS_URL"]
 
 celery = Celery(
     "worker",
