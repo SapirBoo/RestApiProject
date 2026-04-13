@@ -16,7 +16,8 @@ def send_email_task(to_email, subject):
         subject=subject,
         plain_text_content="Welcome! You registered successfully."
     )
-
+    
+@celery.task
 def send_welcome_email(to_email: str, name: str):
     message = Mail(
     from_email=os.getenv("FROM_EMAIL"),
