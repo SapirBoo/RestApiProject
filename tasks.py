@@ -1,6 +1,6 @@
 from celery_app import celery
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import Mail, To
 import os
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
@@ -22,7 +22,7 @@ def send_welcome_email(to_email: str, name: str):
     
     message = Mail(
     from_email=os.getenv("FROM_EMAIL"),
-    to_emails=to_email
+    to_emails=To(to_email),
     )
 
     message.dynamic_template_data = {
