@@ -4,7 +4,7 @@ from sendgrid.helpers.mail import Mail, To
 import os
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-TEMPLATE_ID = os.getenv("SENDGRID_TEMPLATE_ID")
+TEMPLATE_ID = os.getenv("TEMPLATE_ID")
 
 
 @celery.task
@@ -30,7 +30,7 @@ def send_welcome_email(to_email: str, name: str):
     "email": to_email
     }
 
-    message.template_id = TEMPLATE_ID
+    message.template_id = str(TEMPLATE_ID)    
     
     print(message.template_id)
     print(message.dynamic_template_data)
