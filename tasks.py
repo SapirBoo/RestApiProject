@@ -19,6 +19,9 @@ def send_email_task(to_email, subject):
     
 @celery.task
 def send_welcome_email(to_email: str, name: str):
+    print(message.template_id)
+    print(message.dynamic_template_data)
+    
     message = Mail(
     from_email=os.getenv("FROM_EMAIL"),
     to_emails=to_email
