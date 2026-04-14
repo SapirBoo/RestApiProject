@@ -60,11 +60,11 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
     db.add(new_user)
     db.commit()
-    db.refresh(user)
+    db.refresh(new_user)
     
-    token=create_verification_token(user.id) 
+    token=create_verification_token(new_user.id) 
     send_verification_email.delay(
-    user.email,user.username,token
+    new_user.email,new_user.username,token
     )
     
     return {"msg": "User created successfully"}
