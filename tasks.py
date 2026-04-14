@@ -6,36 +6,22 @@ import os
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 TEMPLATE_ID = os.getenv("TEMPLATE_ID")
 
-print("TEMPLATE_ID ENV:", os.getenv("TEMPLATE_ID"))
-print("SENDGRID_TEMPLATE_ID ENV:", os.getenv("SENDGRID_TEMPLATE_ID"))
-
 @celery.task
-def send_email_task(to_email, subject):
-    print("Send email..")
-    message = Mail(
-        from_email=os.getenv("FROM_EMAIL"),
-        to_emails=to_email,
-        subject=subject,
-        plain_text_content="Welcome! You registered successfully."
-    )
-    
-@celery.task
-def send_welcome_email(to_email: str, name: str):
-    
+def send_verification_email(to_email: str, name: str,token: str):
     message = Mail(
     from_email=os.getenv("FROM_EMAIL"),
     to_emails=To(to_email),
     )
 
+    verification_link: f"https://restful-api-python-project.onrender.com/verify?token={token}"
+    
     message.dynamic_template_data = {
     "name": name,
-    "email": to_email
+    "email": to_email,
+    "verification_link": verification_link
     }
 
     message.template_id = str(TEMPLATE_ID)    
-    
-    print(message.template_id)
-    print(message.dynamic_template_data)
     
     try:
         sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))

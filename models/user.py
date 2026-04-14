@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from db import Base
 
@@ -10,4 +10,5 @@ class User(Base):
     email= Column(String,unique=True, index=True)
     password=Column(String, nullable=False, index=True)
     last_login = Column(DateTime, nullable=True)
+    is_verified =Column(Boolean,default=False,nullable=False)
     

@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError
 
@@ -14,7 +16,7 @@ from dependencies.auth import security,decode_and_validate_token
 import jwt
 
 from dependencies.auth import blacklist, get_current_user
-from tasks import send_welcome_email
+from tasks import send_verification_email
 
 rt=APIRouter(tags=["auth"])
 
@@ -57,17 +59,26 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
     db.add(new_user)
     db.commit()
-    send_welcome_email.delay(
-    user.email,user.username)
+    db.refresh(user)
+    
+    token=create_verification_token(user.id) 
+    send_verification_email.delay(
+    user.email,user.username,token
+    )
+    
     return {"msg": "User created successfully"}
 
 # ---- Login ----
 @rt.post("/login")
 def login(user_data: UserLogin, db: Session = Depends(get_db)):
+    
     user = db.query(User).filter(User.username == user_data.username).first()
 
     if not user or not verify_password(user_data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    if not user.is_verified:
+        raise HTTPException(status_code=403, detail="Email not verified")
 
     access_token = create_access_token({"sub": user.username})
     refresh_token = create_refresh_token({"sub": user.username})
@@ -120,3 +131,28 @@ def refresh_token(credentials: HTTPAuthorizationCredentials = Depends(security),
         "refresh_token": new_refresh_token,
         "token_type": "bearer"
     }
+
+#-----create_verification_token for verification email in register-------    
+def create_verification_token(user_id: int):
+    payload = {
+        "user_id": user_id,
+        "exp": datetime.now() + timedelta(hours=24)
+    }
+
+    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
+   
+@rt.get("/verify")
+def verify_email(token: str, db: Session):
+    payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    user_id = payload["user_id"]
+
+    user = db.query(User).get(user_id)
+
+    if not user:
+        raise HTTPException(status_code=404)
+
+    user.is_verified = True
+    db.commit()
+
+    return {"message": "Email verified successfully"}
