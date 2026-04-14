@@ -13,7 +13,7 @@ def send_verification_email(to_email: str, name: str,token: str):
     to_emails=To(to_email),
     )
 
-    verification_link: f"https://restful-api-python-project.onrender.com/verify?token={token}"
+    verification_link=f"https://restful-api-python-project.onrender.com/verify?token={token}"
     
     message.dynamic_template_data = {
     "name": name,
