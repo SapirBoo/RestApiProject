@@ -143,7 +143,7 @@ def create_verification_token(user_id: int):
 
    
 @rt.get("/verify")
-def verify_email(token: str, db: Session):
+def verify_email(token: str, db: Session = Depends(get_db)):
     payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
     user_id = payload["user_id"]
 
