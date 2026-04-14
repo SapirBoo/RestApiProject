@@ -1,12 +1,11 @@
 from pydantic import BaseModel
-from sqlalchemy import Boolean
 
 
 class UserCreate(BaseModel):
     username: str
     password: str
     email: str
-    is_verified: Boolean
+    is_verified: bool
     
 class UserResponse(BaseModel):
     id: int
