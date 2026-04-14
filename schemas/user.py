@@ -5,7 +5,6 @@ class UserCreate(BaseModel):
     username: str
     password: str
     email: str
-    is_verified: bool
     
 class UserResponse(BaseModel):
     id: int
