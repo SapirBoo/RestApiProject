@@ -15,6 +15,10 @@ rt=APIRouter( tags=["tags"])
 
 @rt.get("/store/{store_id}/tags",status_code=status.HTTP_200_OK)
 def get_tags_in_store(store_id: int,db: Session=Depends(get_db)):
+    storeExisting = db.query(Store).filter(Store.id == store_id).first()
+    if not storeExisting:
+        raise HTTPException(status_code=404, detail="Store not found")
+    
     data= db.query(Tag).filter(Tag.store_id == store_id).all()
     return {
         "tags":[
@@ -28,7 +32,8 @@ def get_tags_in_store(store_id: int,db: Session=Depends(get_db)):
 
 @rt.get("/tags/{tag_id}",status_code=status.HTTP_200_OK)
 def get_tag(tag_id: int,db: Session=Depends(get_db)):
-    tag= db.query(Tag).filter(Tag.id == tag_id).first()
+    tag=db.get(Tag, tag_id)
+
     if not tag:
         raise HTTPException(status_code=404, detail="Item not found")
     
@@ -56,8 +61,8 @@ def create_tag(new_tag: TagCreate,db: Session=Depends(get_db)):
 
 @rt.post("/item/{item_id}/tag/{tag_id}",status_code=status.HTTP_200_OK)
 def linkTagToItem(item_id: int,tag_id : int,db: Session=Depends(get_db)):
-    item = db.query(Item).filter(Item.id == item_id).first()
-    tag= db.query(Tag).filter(Tag.id == tag_id).first()
+    item = db.get(Item, item_id)
+    tag=db.get(Tag, tag_id)
     if not item or not tag:
         raise HTTPException(status_code=404, detail="Tag or Item not found")
     
@@ -79,7 +84,7 @@ def linkTagToItem(item_id: int,tag_id : int,db: Session=Depends(get_db)):
 
 @rt.delete("/tag/{tag_id}",status_code=status.HTTP_204_NO_CONTENT)
 def delete_item(tag_id:int ,db: Session = Depends(get_db)):
-    tag=db.query(Tag).filter(tag_id ==Tag.id).first()
+    tag=db.get(Tag, tag_id)
     if not tag:
         raise HTTPException(status_code=404, detail="Tag not found")
     
@@ -89,15 +94,15 @@ def delete_item(tag_id:int ,db: Session = Depends(get_db)):
 
 @rt.delete("/{tag_id}/items/{item_id}",status_code=status.HTTP_200_OK)
 def removeTagFromItem(tag_id: int, item_id: int,db: Session = Depends(get_db)):
-    tag = db.query(Tag).filter(tag_id ==Tag.id).first()
-    item = db.query(Item).filter(Item.id == item_id).first()
+    tag = db.get(Tag, tag_id)
+    item = db.get(Item, item_id)
 
     if not tag or not item:
         raise HTTPException(status_code=404, detail="Tag or Item not found")
     
     if tag not in item.tags:
-        return {"message": "Tag not attached to item"}
-
+        raise HTTPException(status_code=400, detail="Tag not attached to item")
+    
     item.tags.remove(tag)
     db.commit()
     return {"message": "Tag removed from item"}

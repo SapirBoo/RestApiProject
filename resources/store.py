@@ -47,7 +47,8 @@ def get_all_stores(db: Session = Depends(get_db)):
 
 @rt.get("/store/{store_id}",status_code=status.HTTP_200_OK)
 def get_store(store_id: int, db: Session = Depends(get_db)):
-    store = db.query(Store).filter(Store.id == store_id).first()
+    
+    store=db.get(Store, store_id)
     if not store:
         raise HTTPException(status_code=404, detail="Store not found")
     
@@ -82,10 +83,15 @@ def create_store(store: StoreCreate, db: Session = Depends(get_db),user: User = 
 
 @rt.delete("/store/{store_id}",  status_code=status.HTTP_204_NO_CONTENT)
 def delete_store(store_id: int, db:Session = Depends(get_db)):
-    
-    store = db.query(Store).filter(Store.id == store_id).first()
+    store=db.get(Store, store_id)
     if not store:
         raise HTTPException(status_code=404, detail="Store not found")
+    items= [
+            {"id": i.id, "name": i.name, "price": i.price}
+            for i in store.items
+        ]
+    if items:
+        raise HTTPException(status_code=400, detail="Store has items, cannot delete")
     
     db.delete(store)
     db.commit()

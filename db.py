@@ -1,3 +1,4 @@
+from http.client import HTTPException
 import os
 import sqlite3
 from sqlalchemy import Engine,  event
@@ -12,8 +13,6 @@ SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not SQLALCHEMY_DATABASE_URL:
     raise ValueError("DATABASE_URL is not set")
-
-
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) # type: ignore

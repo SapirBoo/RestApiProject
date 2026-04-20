@@ -28,7 +28,7 @@ def get_items(db: Session = Depends(get_db)):
 
 @rt.get("/item/{item_id}", status_code=status.HTTP_200_OK)
 def get_item(item_id: int, db: Session = Depends(get_db)):
-    item = db.query(Item).filter(Item.id == item_id).first()
+    item = db.get(Item, item_id)
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     return {
@@ -104,8 +104,8 @@ def update_item(item_id:int, item: ItemUpdate, db: Session = Depends(get_db)):
 
 @rt.post("/tags/{tag_id}/item/{item_id}",status_code=status.HTTP_200_OK)
 def linkItemToTag(item_id: int,tag_id : int,db: Session=Depends(get_db)):
-    item = db.query(Item).filter(Item.id == item_id).first()
-    tag= db.query(Tag).filter(Tag.id == tag_id).first()
+    item = db.get(Item, item_id)
+    tag= db.get(Tag, tag_id)
     if not item or not tag:
         raise HTTPException(status_code=404, detail="Tag or Item not found")
     
@@ -127,8 +127,8 @@ def linkItemToTag(item_id: int,tag_id : int,db: Session=Depends(get_db)):
 
 @rt.delete("/tags/{tag_id}/items/{item_id}",status_code=status.HTTP_200_OK)
 def removeItemFromTag(tag_id: int, item_id: int,db: Session = Depends(get_db)):
-    tag = db.query(Tag).filter(tag_id ==Tag.id).first()
-    item = db.query(Item).filter(Item.id == item_id).first()
+    tag = db.get(Tag, tag_id)
+    item = db.get(Item, item_id)
 
     if not tag or not item:
         raise HTTPException(status_code=404, detail="Tag or Item not found")

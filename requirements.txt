@@ -17,3 +17,6 @@ redis
 celery
 cffi
 cryptography
+pytest
+httpx
+pytest-cov

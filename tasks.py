@@ -20,11 +20,11 @@ def send_verification_email(to_email: str, name: str,token: str):
     "email": to_email,
     "verification_link": verification_link
     }
-
-    message.template_id = str(TEMPLATE_ID)    
+    if TEMPLATE_ID:
+        message.template_id = TEMPLATE_ID
     
     try:
-        sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
         response = sg.send(message)
         return response.status_code
 

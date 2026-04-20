@@ -7,7 +7,7 @@ from schemas.user import UserResponse,UserCreate,UserLogin
 from utils.security import hash_password
 import os
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import Mail, To
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 FROM_EMAIL = os.getenv("FROM_EMAIL")
@@ -16,7 +16,7 @@ rt=APIRouter(tags=["users"])
 
 @rt.get("/user/{user_id}",status_code=status.HTTP_200_OK)
 def get_user(user_id: int, db: Session = Depends(db.get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -27,7 +27,7 @@ def get_user(user_id: int, db: Session = Depends(db.get_db)):
             
 @rt.delete("/user/{user_id}", status_code=status.HTTP_200_OK)
 def delete_user(user_id: int, db: Session = Depends(db.get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -36,7 +36,7 @@ def delete_user(user_id: int, db: Session = Depends(db.get_db)):
 
 def send_email(to_email: str, subject:str) :
     message= Mail(from_email=FROM_EMAIL,
-                  to_emails=to_email,
+                  to_emails=To(to_email),
                   subject=subject,
                   html_content="<h1>Welcome!</h1><p>Your account was created </p>"
                 )

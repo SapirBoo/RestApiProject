@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError
+from jwt import DecodeError, ExpiredSignatureError, InvalidTokenError
 
 import db
 from fastapi import FastAPI, HTTPException ,APIRouter,status,Depends
@@ -21,21 +21,21 @@ from tasks import send_verification_email
 rt=APIRouter(tags=["auth"])
 
 
-def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    token = credentials.credentials
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+#    token = credentials.credentials
+#    try:
+#        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
-        if payload.get("jti") in blacklist:
-            raise HTTPException(status_code=401, detail="Token revoked")
+#        if payload.get("jti") in blacklist:
+#            raise HTTPException(status_code=401, detail="Token revoked")
 
-        return payload
+#        return payload
     
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
+#    except jwt.ExpiredSignatureError:
+#        raise HTTPException(status_code=401, detail="Token expired")
     
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
+#    except Exception:
+#        raise HTTPException(status_code=401, detail="Invalid token")
 
 
 # ---- Register ----
@@ -114,6 +114,7 @@ def protected(current_user: User = Depends(get_current_user)):
 @rt.post("/refresh")
 def refresh_token(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
     token = credentials.credentials 
+    print(f"Received refresh token: {token}")
     payload = decode_and_validate_token(token,expected_type="refresh") 
 
     user_name = payload.get("sub")
@@ -145,13 +146,22 @@ def create_verification_token(user_id: int):
    
 @rt.get("/verify")
 def verify_email(token: str, db: Session = Depends(get_db)):
-    payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-    user_id = payload["user_id"]
+    
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload["user_id"]
+        
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=400, detail="Token expired")
 
-    user = db.query(User).get(user_id)
+    except (jwt.DecodeError, InvalidTokenError):
+        raise HTTPException(status_code=400, detail="Invalid token")
+
+    user = db.get(User, user_id)
 
     if not user:
         raise HTTPException(status_code=404)
+    
 
     user.is_verified = True
     db.commit()
